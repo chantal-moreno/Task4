@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema(
     },
     lastLogin: {
       type: Date,
-      default: null,
+      default: Date.now,
     },
     status: {
       type: String,

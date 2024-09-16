@@ -90,6 +90,10 @@ app.post('/login', async (request, response) => {
       { expiresIn: '24h' }
     );
 
+    //Update lastLogin
+    user.lastLogin = new Date();
+    await user.save();
+
     return response.status(200).send({
       message: 'Login Successful',
       email: user.email,
@@ -102,7 +106,23 @@ app.post('/login', async (request, response) => {
     });
   }
 });
+app.get('/admin-panel', async (request, response) => {
+  try {
+    const users = await User.find({}).select(
+      'firstName lastName email position lastLogin status'
+    );
 
+    response.status(200).json({
+      message: 'Users retrieved successfully',
+      users,
+    });
+  } catch (error) {
+    response.status(500).json({
+      message: 'Error retrieving users',
+      error: error.message,
+    });
+  }
+});
 dbConnect();
 
 module.exports = app;
