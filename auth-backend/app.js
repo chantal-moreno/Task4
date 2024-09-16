@@ -5,6 +5,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const dbConnect = require('./db/dbConnect');
 const User = require('./db/userModel');
+const auth = require('./auth');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -86,7 +87,7 @@ app.post('/login', async (request, response) => {
         userId: user._id,
         userEmail: user.email,
       },
-      process.env.JWT_SECRET || 'RANDOM-TOKEN',
+      process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
 
@@ -106,7 +107,7 @@ app.post('/login', async (request, response) => {
     });
   }
 });
-app.get('/admin-panel', async (request, response) => {
+app.get('/admin-panel', auth, async (request, response) => {
   try {
     const users = await User.find({}).select(
       'firstName lastName email position lastLogin status'
@@ -123,6 +124,21 @@ app.get('/admin-panel', async (request, response) => {
     });
   }
 });
+
+// CORS (Cross-Origin Resource Sharing)
+app.use((request, response, next) => {
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'
+  );
+  response.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+  );
+  next();
+});
+
 dbConnect();
 
 module.exports = app;
