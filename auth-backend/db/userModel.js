@@ -28,7 +28,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: ['Manager', 'Developer', 'Designer', 'QA', 'Other'],
-      default: 'Other',
     },
     lastLogin: {
       type: Date,
