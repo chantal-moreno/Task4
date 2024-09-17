@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import InputField from './InputField';
+import axios from 'axios';
+
 function Register() {
   // Status for form fields
   const [formData, setFormData] = useState({
@@ -53,6 +55,19 @@ function Register() {
     if (Object.keys(validationErrors).length === 0) {
       console.log('Form submitted', formData);
       // Send to server!
+      const server = 'http://localhost:3000';
+      const configuration = {
+        method: 'post',
+        url: server + '/register',
+        data: formData,
+      };
+      axios(configuration)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setErrors(validationErrors);
     }
@@ -98,12 +113,12 @@ function Register() {
             value={formData.position}
             onChange={handleChange}
           >
-            <option value="">Select position</option>
-            <option value="1">Manager</option>
-            <option value="2">Developer</option>
-            <option value="3">Designer</option>
-            <option value="4">QA</option>
-            <option value="5">Other</option>
+            <option>Select position</option>
+            <option value="Manager">Manager</option>
+            <option value="Developer">Developer</option>
+            <option value="Designer">Designer</option>
+            <option value="QA">QA</option>
+            <option value="Other">Other</option>
           </Form.Select>
           {errors.position && (
             <div className="invalid-feedback">{errors.position}</div>
