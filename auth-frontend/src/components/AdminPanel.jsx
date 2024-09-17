@@ -1,24 +1,35 @@
+import { useState, useEffect } from 'react';
 import { Table, Form, Button, Container, Row, Col } from 'react-bootstrap';
-// import axios from 'axios';
+import axios from 'axios';
 
 function AdminPanel() {
-  // const server = 'http://localhost:3000';
-  // const configuration = {
-  //   method: 'get',
-  //   url: `${server}/admin-panel`,
-  // };
-  // axios(configuration)
-  //   .then((result) => {
-  //     console.log(result);
-  //   })
-  //   .catch((error) => {
-  //     console.error(
-  //       'Error:',
-  //       error.response ? error.response.data : error.message
-  //     );
-  //   });
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Get token from Local Storage
+    const token = localStorage.getItem('token');
+    const server = 'http://localhost:3000';
+    const configuration = {
+      method: 'get',
+      url: `${server}/admin-panel`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    axios(configuration)
+      .then((result) => {
+        console.log(result);
+        setUsers(result.data.users);
+      })
+      .catch((error) => {
+        console.error(
+          'Error:',
+          error.response ? error.response.data : error.message
+        );
+      });
+  }, []);
   return (
-    <Container>
+    <Container className="d-flex flex-column">
       <Row className="mb-4 align-items-center">
         <Col>
           <h1>Admin Panel</h1>
@@ -27,15 +38,18 @@ function AdminPanel() {
           <Form.Text>Hello, Name!</Form.Text> <a href="#">Logout</a>
         </Col>
       </Row>
-      <Button variant="secondary" size="sm">
-        Block
-      </Button>{' '}
-      <Button variant="success" size="sm">
-        Unlock
-      </Button>{' '}
-      <Button variant="danger" size="sm">
-        Delete
-      </Button>
+      <div className="d-flex flex-lg-row gap-1">
+        <Button variant="secondary" size="sm">
+          Block
+        </Button>
+        <Button variant="success" size="sm">
+          Unlock
+        </Button>
+        <Button variant="danger" size="sm">
+          Delete
+        </Button>
+      </div>
+
       <Table striped>
         <thead>
           <tr>
@@ -50,29 +64,18 @@ function AdminPanel() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
-            <td>Otto</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td>@mdo</td>
-            <td>Otto</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td colSpan={2}>Larry the Bird</td>
-            <td>@twitter</td>
-            <td>@mdo</td>
-            <td>Otto</td>
-          </tr>
+          {users.map((user) => (
+            <tr key={user._id}>
+              <td>
+                <Form.Check />
+              </td>
+              <td>{`${user.firstName} ${user.lastName}`}</td>
+              <td>{user.position}</td>
+              <td>{user.email}</td>
+              <td>{user.lastLogin}</td>
+              <td>{user.status}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </Container>

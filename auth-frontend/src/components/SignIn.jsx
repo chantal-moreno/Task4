@@ -58,6 +58,10 @@ function SignIn() {
       axios(configuration)
         .then((result) => {
           console.log(result);
+          //Get JWT
+          const token = result.data.token;
+          // Store the token
+          localStorage.setItem('token', token);
           //Go to Admin Panel
           navigate('/admin-panel');
         })
