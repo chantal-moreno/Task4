@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Row, Col, InputGroup } from 'react-bootstrap';
 import InputField from './InputField';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
   // Status for form fields
@@ -48,6 +49,12 @@ function Register() {
     return formErrors;
   };
 
+  const navigate = useNavigate();
+  const handleSignInClick = (e) => {
+    e.preventDefault();
+    navigate('/sign-in');
+  };
+
   // Form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,16 +65,20 @@ function Register() {
       const server = 'http://localhost:3000';
       const configuration = {
         method: 'post',
-        url: server + '/register',
+        url: `${server}/register`,
         data: formData,
       };
       axios(configuration)
         .then((result) => {
           console.log(result);
           //Go to SignIn
+          navigate('/sign-in');
         })
         .catch((error) => {
-          console.log(error);
+          console.error(
+            'Error:',
+            error.response ? error.response.data : error.message
+          );
         });
     } else {
       setErrors(validationErrors);
@@ -152,8 +163,12 @@ function Register() {
           Submit
         </Button>
       </Form>
-      <Form.Text className="mb-3">Already have an account? </Form.Text>
-      <a href="#">Sign In</a>
+      <Form.Text className="mb-3">
+        Already have an account?{' '}
+        <a href="#" onClick={handleSignInClick}>
+          Sign In
+        </a>
+      </Form.Text>
     </>
   );
 }
