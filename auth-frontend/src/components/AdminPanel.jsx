@@ -64,7 +64,9 @@ function AdminPanel() {
         .post('http://localhost:3000/block-users', { userIds: selectedUsers })
         .then((response) => {
           console.log(response.data);
-          fetchUsers();
+          // Check if user blocks himself
+          const currentUser = localStorage.getItem('userId');
+          selectedUsers.includes(currentUser) ? handleLogout() : fetchUsers();
         })
         .catch((error) => {
           console.error('Error blocking users:', error.response);
@@ -98,7 +100,9 @@ function AdminPanel() {
       })
         .then((response) => {
           console.log(response.data);
-          fetchUsers();
+          // Check if user deletes himself
+          const currentUser = localStorage.getItem('userId');
+          selectedUsers.includes(currentUser) ? handleLogout() : fetchUsers();
         })
         .catch((error) => {
           console.error('Error eliminando usuarios:', error.response);

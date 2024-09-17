@@ -58,19 +58,21 @@ function SignIn() {
       axios(configuration)
         .then((result) => {
           console.log(result);
-          //Get JWT
+          //Get JWT and userId
           const token = result.data.token;
-          // Store the token
+          const userId = result.data.id;
+          // Store token and userId
           localStorage.setItem('token', token);
+          localStorage.setItem('userId', userId);
           //Go to Admin Panel
           navigate('/admin-panel');
         })
         .catch((error) => {
-          console.error(
-            'Error:',
-            error.response ? error.response.data : error.message
-          );
-          // Send user alert not Sign In
+          if (error.response.status == 403) {
+            alert('Your account is blocked');
+          } else {
+            console.error('Login error:', error.response.status);
+          }
         });
     } else {
       setErrors(validationErrors);

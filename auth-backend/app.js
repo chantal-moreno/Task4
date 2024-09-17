@@ -99,7 +99,11 @@ app.post('/login', async (request, response) => {
         message: 'Password does not match',
       });
     }
-
+    if (user.status == 'Blocked') {
+      return response.status(403).send({
+        message: 'User account is blocked',
+      });
+    }
     // Create JWT
     const token = jwt.sign(
       {
@@ -116,6 +120,7 @@ app.post('/login', async (request, response) => {
 
     return response.status(200).send({
       message: 'Login Successful',
+      id: user.id,
       email: user.email,
       token,
     });
