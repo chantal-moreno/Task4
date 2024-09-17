@@ -6,7 +6,7 @@ import axios from 'axios';
 function AdminPanel() {
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
+  const fetchUsers = () => {
     // Get token from Local Storage
     const token = localStorage.getItem('token');
 
@@ -34,6 +34,9 @@ function AdminPanel() {
           error.response ? error.response.data : error.message
         );
       });
+  };
+  useEffect(() => {
+    fetchUsers();
   }, []);
 
   //Logout
@@ -42,6 +45,65 @@ function AdminPanel() {
     // Delete token from localStorage
     localStorage.removeItem('token');
     navigate('/sign-in');
+  };
+
+  // User checkbox
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const handleSelectUser = (userId) => {
+    if (selectedUsers.includes(userId)) {
+      setSelectedUsers(selectedUsers.filter((id) => id !== userId));
+    } else {
+      setSelectedUsers([...selectedUsers, userId]);
+    }
+  };
+
+  // Block users
+  const handleBlockUsers = () => {
+    if (selectedUsers.length > 0) {
+      axios
+        .post('http://localhost:3000/block-users', { userIds: selectedUsers })
+        .then((response) => {
+          console.log(response.data);
+          fetchUsers();
+        })
+        .catch((error) => {
+          console.error('Error blocking users:', error.response);
+        });
+    }
+  };
+  // Unlock users
+  const handleUnlockUsers = () => {
+    if (selectedUsers.length > 0) {
+      axios
+        .post('http://localhost:3000/unlock-users', { userIds: selectedUsers })
+        .then((response) => {
+          console.log(response.data);
+          fetchUsers();
+        })
+        .catch((error) => {
+          console.error('Error unlocking users:', error.response);
+        });
+    }
+  };
+
+  // Delete users
+  const handleDeleteUsers = () => {
+    if (selectedUsers.length > 0) {
+      axios({
+        method: 'delete',
+        url: 'http://localhost:3000/delete-users',
+        data: {
+          userIds: selectedUsers,
+        },
+      })
+        .then((response) => {
+          console.log(response.data);
+          fetchUsers();
+        })
+        .catch((error) => {
+          console.error('Error eliminando usuarios:', error.response);
+        });
+    }
   };
   return (
     <Container className="d-flex flex-column mt-5">
@@ -56,13 +118,28 @@ function AdminPanel() {
         </Col>
       </Row>
       <div className="d-flex flex-lg-row gap-1">
-        <Button variant="secondary" size="sm">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={handleBlockUsers}
+          disabled={selectedUsers.length === 0}
+        >
           Block
         </Button>
-        <Button variant="success" size="sm">
+        <Button
+          variant="success"
+          size="sm"
+          onClick={handleUnlockUsers}
+          disabled={selectedUsers.length === 0}
+        >
           Unlock
         </Button>
-        <Button variant="danger" size="sm">
+        <Button
+          variant="danger"
+          size="sm"
+          onClick={handleDeleteUsers}
+          disabled={selectedUsers.length === 0}
+        >
           Delete
         </Button>
       </div>
@@ -71,7 +148,16 @@ function AdminPanel() {
         <thead>
           <tr>
             <th>
-              <Form.Check />
+              <Form.Check
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedUsers(users.map((user) => user._id));
+                  } else {
+                    setSelectedUsers([]);
+                  }
+                }}
+                checked={selectedUsers.length === users.length}
+              />
             </th>
             <th>Name</th>
             <th>Position</th>
@@ -84,7 +170,10 @@ function AdminPanel() {
           {users.map((user) => (
             <tr key={user._id}>
               <td>
-                <Form.Check />
+                <Form.Check
+                  checked={selectedUsers.includes(user._id)}
+                  onChange={() => handleSelectUser(user._id)}
+                />
               </td>
               <td>{`${user.firstName} ${user.lastName}`}</td>
               <td>{user.position}</td>

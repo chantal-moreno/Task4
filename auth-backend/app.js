@@ -20,6 +20,9 @@ app.use((request, response, next) => {
     'Access-Control-Allow-Methods',
     'GET, POST, PUT, DELETE, PATCH, OPTIONS'
   );
+  if (request.method === 'OPTIONS') {
+    return response.sendStatus(200);
+  }
   next();
 });
 
@@ -138,6 +141,40 @@ app.get('/admin-panel', auth, async (request, response) => {
       message: 'Error retrieving users',
       error: error.message,
     });
+  }
+});
+
+app.post('/block-users', async (req, res) => {
+  const { userIds } = req.body;
+  try {
+    await User.updateMany(
+      { _id: { $in: userIds } },
+      { $set: { status: 'Blocked' } }
+    );
+    res.status(200).json({ message: 'Users blocked successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error blocking users', error });
+  }
+});
+app.post('/unlock-users', async (req, res) => {
+  const { userIds } = req.body;
+  try {
+    await User.updateMany(
+      { _id: { $in: userIds } },
+      { $set: { status: 'Active' } }
+    );
+    res.status(200).json({ message: 'Users unlocked successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error unlocking users', error });
+  }
+});
+app.delete('/delete-users', async (req, res) => {
+  const { userIds } = req.body;
+  try {
+    await User.deleteMany({ _id: { $in: userIds } });
+    res.status(200).json({ message: 'Users eliminated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error eliminating users', error });
   }
 });
 
