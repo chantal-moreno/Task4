@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Table, Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function AdminPanel() {
@@ -35,6 +36,13 @@ function AdminPanel() {
       });
   }, []);
 
+  //Logout
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    // Delete token from localStorage
+    localStorage.removeItem('token');
+    navigate('/sign-in');
+  };
   return (
     <Container className="d-flex flex-column mt-5">
       <Row className="mb-4 align-items-center">
@@ -42,7 +50,9 @@ function AdminPanel() {
           <h1>Admin Panel</h1>
         </Col>
         <Col md="auto" xs="auto">
-          <a href="#">Logout</a>
+          <a href="#" onClick={handleLogout}>
+            Logout
+          </a>
         </Col>
       </Row>
       <div className="d-flex flex-lg-row gap-1">
