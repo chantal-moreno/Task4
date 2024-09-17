@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import InputField from './InputField';
+import axios from 'axios';
 
 function SignIn() {
   // Status for form fields
@@ -42,6 +43,21 @@ function SignIn() {
     if (Object.keys(validationErrors).length === 0) {
       console.log('Form submitted', formData);
       // Send to server!
+      const server = 'http://localhost:3000';
+      const configuration = {
+        method: 'post',
+        url: server + '/login',
+        data: formData,
+      };
+      axios(configuration)
+        .then((result) => {
+          console.log(result);
+          //Go to Admin Panel
+        })
+        .catch((error) => {
+          console.log(error);
+          // Send user alert not Sign In
+        });
     } else {
       setErrors(validationErrors);
     }

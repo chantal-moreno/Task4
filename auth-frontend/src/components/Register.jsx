@@ -64,6 +64,7 @@ function Register() {
       axios(configuration)
         .then((result) => {
           console.log(result);
+          //Go to SignIn
         })
         .catch((error) => {
           console.log(error);
