@@ -8,7 +8,8 @@ import AdminPanel from './components/AdminPanel';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Register />} />
+      {/* <Route path="/" element={<Register />} /> */}
+      <Route path="/" element={<AdminPanel />} />
       <Route path="/register" element={<Register />} />
       <Route path="/sign-in" element={<SignIn />} />
       <Route path="/admin-panel" element={<AdminPanel />} />

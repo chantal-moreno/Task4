@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
 import InputField from './InputField';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +74,10 @@ function SignIn() {
   };
 
   return (
-    <>
+    <Container
+      className="text-center d-flex justify-content-center align-items-center flex-column"
+      style={{ height: '100vh' }}
+    >
       <h1 className="mb-5">Sign In</h1>
       <Form onSubmit={handleSubmit}>
         <InputField
@@ -103,11 +106,13 @@ function SignIn() {
           Submit
         </Button>
       </Form>
-      <Form.Text className="mb-3">Don&apos;t have an account? </Form.Text>
-      <a href="#" onClick={handleRegisterClick}>
-        Create your account
-      </a>
-    </>
+      <Form.Text className="mb-3">
+        Don&apos;t have an account?{' '}
+        <a href="#" onClick={handleRegisterClick}>
+          Create your account
+        </a>
+      </Form.Text>
+    </Container>
   );
 }
 
