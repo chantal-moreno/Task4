@@ -8,6 +8,7 @@ function AdminPanel() {
   useEffect(() => {
     // Get token from Local Storage
     const token = localStorage.getItem('token');
+
     const server = 'http://localhost:3000';
     const configuration = {
       method: 'get',
@@ -19,7 +20,12 @@ function AdminPanel() {
     axios(configuration)
       .then((result) => {
         console.log(result);
-        setUsers(result.data.users);
+        // Change lastLogin
+        const formattedUsers = result.data.users.map((user) => ({
+          ...user,
+          lastLogin: new Date(user.lastLogin).toLocaleString(),
+        }));
+        setUsers(formattedUsers);
       })
       .catch((error) => {
         console.error(
@@ -28,14 +34,15 @@ function AdminPanel() {
         );
       });
   }, []);
+
   return (
-    <Container className="d-flex flex-column">
+    <Container className="d-flex flex-column mt-5">
       <Row className="mb-4 align-items-center">
         <Col>
           <h1>Admin Panel</h1>
         </Col>
         <Col md="auto" xs="auto">
-          <Form.Text>Hello, Name!</Form.Text> <a href="#">Logout</a>
+          <a href="#">Logout</a>
         </Col>
       </Row>
       <div className="d-flex flex-lg-row gap-1">
