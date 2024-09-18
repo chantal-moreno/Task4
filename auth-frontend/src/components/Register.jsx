@@ -62,7 +62,7 @@ function Register() {
     if (Object.keys(validationErrors).length === 0) {
       console.log('Form submitted', formData);
       // Send to server!
-      const server = 'http://localhost:3000';
+      const server = 'https://test4-backend-82s0.onrender.com';
       const configuration = {
         method: 'post',
         url: `${server}/register`,

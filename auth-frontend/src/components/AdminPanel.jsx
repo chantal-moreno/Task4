@@ -10,7 +10,7 @@ function AdminPanel() {
     // Get token from Local Storage
     const token = localStorage.getItem('token');
 
-    const server = 'http://localhost:3000';
+    const server = 'https://test4-backend-82s0.onrender.com';
     const configuration = {
       method: 'get',
       url: `${server}/admin-panel`,
@@ -61,7 +61,9 @@ function AdminPanel() {
   const handleBlockUsers = () => {
     if (selectedUsers.length > 0) {
       axios
-        .post('http://localhost:3000/block-users', { userIds: selectedUsers })
+        .post('https://test4-backend-82s0.onrender.com/block-users', {
+          userIds: selectedUsers,
+        })
         .then((response) => {
           console.log(response.data);
           // Check if user blocks himself
@@ -77,7 +79,9 @@ function AdminPanel() {
   const handleUnlockUsers = () => {
     if (selectedUsers.length > 0) {
       axios
-        .post('http://localhost:3000/unlock-users', { userIds: selectedUsers })
+        .post('https://test4-backend-82s0.onrender.com/unlock-users', {
+          userIds: selectedUsers,
+        })
         .then((response) => {
           console.log(response.data);
           fetchUsers();
@@ -93,7 +97,7 @@ function AdminPanel() {
     if (selectedUsers.length > 0) {
       axios({
         method: 'delete',
-        url: 'http://localhost:3000/delete-users',
+        url: 'https://test4-backend-82s0.onrender.com/delete-users',
         data: {
           userIds: selectedUsers,
         },
